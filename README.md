@@ -110,7 +110,7 @@ Add to your MCP client configuration:
 {
   "mcpServers": {
     "ph-holidays": {
-      "url": "https://ph-holidays-mcp.godmodearch.workers.dev/mcp"
+      "url": "https://ph-holidays.godmode.ph/mcp"
     }
   }
 }
@@ -118,7 +118,7 @@ Add to your MCP client configuration:
 
 ### Quick test
 ```bash
-curl -X POST https://ph-holidays-mcp.godmodearch.workers.dev/mcp \
+curl -X POST https://ph-holidays.godmode.ph/mcp \
   -H "Content-Type: application/json" \
   -d '{
     "jsonrpc": "2.0",
