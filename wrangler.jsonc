@@ -21,10 +21,16 @@
 	"kv_namespaces": [
 		{
 			"binding": "HOLIDAYS_KV",
-			"id": "placeholder-replace-before-deploy"
+			"id": "ea46831157a44f24a07e373ea12512f9"
 		}
 	],
 	"observability": {
 		"enabled": true
-	}
+	},
+	"routes": [
+		{
+			"pattern": "ph-holidays.godmode.ph",
+			"custom_domain": true
+		}
+	]
 }
