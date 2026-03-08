@@ -1,0 +1,144 @@
+{
+	"year": 2025,
+	"proclamation": "No. 727",
+	"signed_by": "Lucas Bersamin, Executive Secretary",
+	"signed_date": "2024-10-30",
+	"published_date": "2024-10-30",
+	"source": "Official Gazette of the Republic of the Philippines",
+	"source_url": "https://www.officialgazette.gov.ph/nationwide-holidays/",
+	"dole_advisory": "",
+	"holidays": [
+		{
+			"date": "2025-01-01",
+			"name": "New Year's Day",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-04-09",
+			"name": "Araw ng Kagitingan",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-04-17",
+			"name": "Maundy Thursday",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-04-18",
+			"name": "Good Friday",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-05-01",
+			"name": "Labor Day",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-06-12",
+			"name": "Independence Day",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-08-25",
+			"name": "National Heroes Day",
+			"type": "regular",
+			"movable": true
+		},
+		{
+			"date": "2025-11-30",
+			"name": "Bonifacio Day",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-12-25",
+			"name": "Christmas Day",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-12-30",
+			"name": "Rizal Day",
+			"type": "regular",
+			"movable": false
+		},
+		{
+			"date": "2025-04-01",
+			"name": "Eid'l Fitr",
+			"type": "islamic",
+			"movable": true,
+			"eid_confirmed": true,
+			"estimated_date": "2025-04-01",
+			"notes": "Confirmed by Proclamation No. 839, s. 2025, signed March 20, 2025."
+		},
+		{
+			"date": "2025-06-06",
+			"name": "Eid'l Adha",
+			"type": "islamic",
+			"movable": true,
+			"eid_confirmed": true,
+			"estimated_date": "2025-06-06",
+			"notes": "Confirmed by Proclamation No. 911, s. 2025, signed May 21, 2025."
+		},
+		{
+			"date": "2025-01-29",
+			"name": "Chinese New Year",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-04-19",
+			"name": "Black Saturday",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-08-21",
+			"name": "Ninoy Aquino Day",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-10-31",
+			"name": "All Saints' Day Eve",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-11-01",
+			"name": "All Saints' Day",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-12-08",
+			"name": "Feast of the Immaculate Conception of Mary",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-12-24",
+			"name": "Christmas Eve",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-12-31",
+			"name": "Last Day of the Year",
+			"type": "special_non_working",
+			"movable": false
+		},
+		{
+			"date": "2025-02-25",
+			"name": "EDSA People Power Revolution Anniversary",
+			"type": "special_working",
+			"movable": false
+		}
+	]
+}
