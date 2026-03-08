@@ -1,0 +1,45 @@
+{
+	"name": "@aaronzara/ph-holidays-mcp",
+	"version": "1.0.0",
+	"private": false,
+	"description": "MCP server providing Philippine national holiday data to AI agents. Data sourced from official presidential proclamations.",
+	"author": "Aaron Zara <aaron.zara@godmode.ph>",
+	"homepage": "https://godmode.ph",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/GodModeArch/ph-holidays-mcp"
+	},
+	"license": "MIT",
+	"files": [
+		"README.md",
+		"LICENSE"
+	],
+	"keywords": [
+		"mcp",
+		"philippines",
+		"holidays",
+		"philippine-holidays",
+		"cloudflare-workers"
+	],
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"cf-typegen": "wrangler types",
+		"type-check": "tsc --noEmit",
+		"seed": "tsx scripts/seed.ts",
+		"validate": "tsx scripts/validate.ts",
+		"rollover": "tsx scripts/rollover.ts",
+		"patch-eid": "tsx scripts/patch-eid.ts",
+		"patch-holiday": "tsx scripts/patch-holiday.ts"
+	},
+	"dependencies": {
+		"agents": "^0.5.0",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"tsx": "^4.19.0",
+		"typescript": "5.9.3",
+		"wrangler": "^4.67.0"
+	}
+}

@@ -1,0 +1,33 @@
+node_modules/
+.wrangler/
+.dev.vars
+
+*.tsbuildinfo
+*.tgz
+
+logs
+*.log
+npm-debug.log*
+
+coverage
+.nyc_output
+
+dist
+
+scripts/data/output/
+
+.env
+.env.local
+.env.*.local
+
+CLAUDE.md
+.claude/
+
+# Auto-generated (regenerate via: npm run cf-typegen)
+worker-configuration.d.ts
+
+# Internal spec (not for public repo)
+ph-holidays-mcp-spec.md
+
+# WSL artifacts
+*Zone.Identifier
