@@ -91,4 +91,8 @@ export function kvMetaKey(year: number): string {
 	return `${KV_PREFIX.holidays}:${year}:meta`;
 }
 
+export function kvLongWeekendsKey(year: number): string {
+	return `${KV_PREFIX.holidays}:${year}:long_weekends`;
+}
+
 export const KV_INDEX_KEY = "holidays:index";

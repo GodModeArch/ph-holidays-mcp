@@ -15,6 +15,7 @@ coverage
 dist
 
 scripts/data/output/
+.tmp-kv-bulk.json
 
 .env
 .env.local

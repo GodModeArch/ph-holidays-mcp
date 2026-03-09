@@ -4,26 +4,19 @@
  * Usage: npm run patch-holiday -- --year=2026 --date=2026-06-18 --type=special_non_working --name="National Whatever Day"
  */
 
-import { execSync } from "node:child_process";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
+import { kvGet, kvPutBatch } from "./lib/kv-helpers";
+import {
+	computeLongWeekends,
+	buildLongWeekendInfo,
+	getDayOfWeek,
+} from "./lib/long-weekends";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.join(__dirname, "..");
 
-function wrangler(cmd: string): string {
-	return execSync(`npx wrangler ${cmd}`, {
-		cwd: PROJECT_ROOT,
-		encoding: "utf-8",
-	});
-}
-
-function kvPut(key: string, value: string): void {
-	execSync(`npx wrangler kv key put --binding=HOLIDAYS_KV --local "${key}" '${value}'`, {
-		cwd: PROJECT_ROOT,
-		stdio: "inherit",
-	});
-}
+const VALID_TYPES = ["regular", "special_non_working", "special_working", "islamic"];
 
 function main() {
 	const args = process.argv.slice(2);
@@ -44,17 +37,21 @@ function main() {
 	const type = typeArg.split("=")[1];
 	const name = nameArg.split("=")[1];
 
-	const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-	const dayOfWeek = DAYS[new Date(date + "T12:00:00Z").getUTCDay()];
+	if (!VALID_TYPES.includes(type)) {
+		console.error(`Invalid type: "${type}". Must be one of: ${VALID_TYPES.join(", ")}`);
+		process.exit(1);
+	}
+
+	const dayOfWeek = getDayOfWeek(date);
 
 	console.log(`Patching: adding ${name} on ${date} (${type})\n`);
 
 	// Load year array
-	const holidaysRaw = wrangler(`kv key get --binding=HOLIDAYS_KV --local "holidays:${year}"`);
+	const holidaysRaw = kvGet(`holidays:${year}`, PROJECT_ROOT);
 	const holidays = JSON.parse(holidaysRaw);
 
-	// Build new record
-	const newRecord = {
+	// Build new record (long_weekend recomputed below)
+	const newRecord: Record<string, unknown> = {
 		date,
 		name,
 		type,
@@ -62,14 +59,7 @@ function main() {
 		movable: false,
 		double_holiday: false,
 		double_holiday_names: null,
-		long_weekend: {
-			is_part_of: false,
-			window_start: null,
-			window_end: null,
-			days: 0,
-			leave_days_needed: 0,
-			dates: [],
-		},
+		long_weekend: null,
 		source: {
 			proclamation: "Ad hoc proclamation",
 			signed_date: new Date().toISOString().split("T")[0],
@@ -81,28 +71,67 @@ function main() {
 	holidays.push(newRecord);
 	holidays.sort((a: { date: string }, b: { date: string }) => a.date.localeCompare(b.date));
 
-	// Update KV
-	kvPut(`holidays:${year}`, JSON.stringify(holidays));
-	kvPut(`holidays:${year}:date:${date}`, JSON.stringify(newRecord));
+	// Detect double holidays for the affected date
+	const sameDateRecords = holidays.filter((h: { date: string }) => h.date === date);
+	if (sameDateRecords.length > 1) {
+		const names = sameDateRecords.map((h: { name: string }) => h.name);
+		for (const h of sameDateRecords) {
+			h.double_holiday = true;
+			h.double_holiday_names = names;
+		}
+		console.log(`Double holiday detected: ${names.join(", ")}`);
+	}
+
+	// Recompute long weekends for all holidays
+	const longWeekendWindows = computeLongWeekends(holidays, year);
+	console.log(`Recomputed ${longWeekendWindows.length} long weekend windows.`);
+
+	for (const h of holidays) {
+		h.long_weekend = buildLongWeekendInfo(h.date, longWeekendWindows);
+	}
+
+	// Build per-date entries (grouped for double holidays)
+	const byDate = new Map<string, (typeof holidays[0])[]>();
+	for (const h of holidays) {
+		const existing = byDate.get(h.date) || [];
+		existing.push(h);
+		byDate.set(h.date, existing);
+	}
+
+	const kvEntries: { key: string; value: string }[] = [];
+
+	// Year array
+	kvEntries.push({ key: `holidays:${year}`, value: JSON.stringify(holidays) });
+
+	// Per-date entries
+	for (const [dt, dateRecords] of byDate) {
+		kvEntries.push({
+			key: `holidays:${year}:date:${dt}`,
+			value: JSON.stringify(dateRecords.length === 1 ? dateRecords[0] : dateRecords),
+		});
+	}
+
+	// Long weekend windows
+	kvEntries.push({
+		key: `holidays:${year}:long_weekends`,
+		value: JSON.stringify(longWeekendWindows),
+	});
 
 	// Update meta
-	const metaRaw = wrangler(`kv key get --binding=HOLIDAYS_KV --local "holidays:${year}"`);
+	const metaRaw = kvGet(`holidays:${year}:meta`, PROJECT_ROOT);
 	const meta = JSON.parse(metaRaw);
-	// Re-read actual meta
-	const actualMetaRaw = wrangler(`kv key get --binding=HOLIDAYS_KV --local "holidays:${year}:meta"`);
-	const actualMeta = JSON.parse(actualMetaRaw);
-	actualMeta.total_holidays = holidays.length;
-	actualMeta.last_updated = new Date().toISOString().split("T")[0];
-
-	// Recount breakdown
-	actualMeta.breakdown = {
+	meta.total_holidays = holidays.length;
+	meta.last_updated = new Date().toISOString().split("T")[0];
+	meta.breakdown = {
 		regular: holidays.filter((h: { type: string }) => h.type === "regular").length,
 		special_non_working: holidays.filter((h: { type: string }) => h.type === "special_non_working").length,
 		special_working: holidays.filter((h: { type: string }) => h.type === "special_working").length,
 		islamic: holidays.filter((h: { type: string }) => h.type === "islamic").length,
 	};
+	kvEntries.push({ key: `holidays:${year}:meta`, value: JSON.stringify(meta) });
 
-	kvPut(`holidays:${year}:meta`, JSON.stringify(actualMeta));
+	// Batch write all updates
+	kvPutBatch(kvEntries, PROJECT_ROOT);
 
 	console.log(`Added ${name} on ${date} (${dayOfWeek}).`);
 }
