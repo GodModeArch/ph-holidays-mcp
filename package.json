@@ -27,6 +27,7 @@
 		"start": "wrangler dev",
 		"cf-typegen": "wrangler types",
 		"type-check": "tsc --noEmit",
+		"test": "tsx --test tests/*.test.ts",
 		"seed": "tsx scripts/seed.ts",
 		"validate": "tsx scripts/validate.ts",
 		"rollover": "tsx scripts/rollover.ts",

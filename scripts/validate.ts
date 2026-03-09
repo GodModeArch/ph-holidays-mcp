@@ -137,6 +137,21 @@ function main() {
 		}
 	}
 
+	// Verify long_weekends exists
+	const longWeekendsEntry = entries.find((e) => e.key === `holidays:${year}:long_weekends`);
+	if (!longWeekendsEntry) {
+		console.error("Missing long_weekends KV entry");
+		errors++;
+	} else {
+		const windows = JSON.parse(longWeekendsEntry.value);
+		if (!Array.isArray(windows)) {
+			console.error("long_weekends entry is not an array");
+			errors++;
+		} else {
+			console.log(`\n  ${windows.length} long weekend windows`);
+		}
+	}
+
 	// Verify index exists
 	const indexEntry = entries.find((e) => e.key === "holidays:index");
 	if (!indexEntry) {

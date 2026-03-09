@@ -110,12 +110,14 @@ export class HolidaysMCP extends McpAgent {
 	}
 }
 
+const mcpHandler = HolidaysMCP.serve("/mcp");
+
 export default {
 	fetch(request: Request, env: Env, ctx: ExecutionContext) {
 		const url = new URL(request.url);
 
 		if (url.pathname === "/mcp") {
-			return HolidaysMCP.serve("/mcp").fetch(request, env, ctx);
+			return mcpHandler.fetch(request, env, ctx);
 		}
 
 		return new Response(
