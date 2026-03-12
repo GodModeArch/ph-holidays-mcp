@@ -7,7 +7,7 @@
 	"homepage": "https://godmode.ph",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/GodModeArch/ph-holidays-mcp"
+		"url": "git+https://github.com/GodModeArch/ph-holidays-mcp.git"
 	},
 	"license": "MIT",
 	"files": [
